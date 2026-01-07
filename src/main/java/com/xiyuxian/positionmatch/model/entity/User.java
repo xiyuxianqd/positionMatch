@@ -47,6 +47,7 @@ public class User implements Serializable {
 
     private Integer userStatus;
 
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Date editTime;
 
     private Date createTime;
