@@ -41,7 +41,7 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Position> i
 
         Position position = new Position();
         BeanUtil.copyProperties(positionAddRequest, position);
-        position.setViewCount(0);
+        position.setViewCount(0L);
         position.setApplyCount(0L);
         position.setCreateTime(new Date());
         position.setUpdateTime(new Date());
@@ -175,9 +175,9 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Position> i
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "职位不存在");
         }
 
-        Integer viewCount = position.getViewCount();
+        Long viewCount = position.getViewCount();
         if (viewCount == null) {
-            viewCount = 0;
+            viewCount = 0L;
         }
         position.setViewCount(viewCount + 1);
         return this.updateById(position);
