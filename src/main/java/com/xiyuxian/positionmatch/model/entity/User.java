@@ -2,16 +2,17 @@ package com.xiyuxian.positionmatch.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
 import java.util.Date;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @TableName(value = "user")
-public class User implements Serializable {
+public class User extends BaseEntity {
 
-    @TableId(type = IdType.ASSIGN_ID)
-    private Long id;
+    @Version
+    private Integer version;
 
     private String userAccount;
 
@@ -46,16 +47,6 @@ public class User implements Serializable {
     private String resumeUrl;
 
     private Integer userStatus;
-
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private Date editTime;
-
-    private Date createTime;
-
-    private Date updateTime;
-
-    @TableLogic
-    private Integer isDelete;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
