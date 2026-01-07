@@ -4,15 +4,18 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
 @ApiModel(description = "公司更新请求")
 public class CompanyUpdateRequest implements Serializable {
 
+    @NotNull(message = "公司id不能为空")
     @ApiModelProperty(value = "公司ID")
     private Long id;
 
+    @NotNull(message = "公司id不能为空")
     @ApiModelProperty(value = "公司名称")
     private String companyName;
 

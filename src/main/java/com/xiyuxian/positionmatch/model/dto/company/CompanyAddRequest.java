@@ -4,12 +4,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 @Data
 @ApiModel(description = "公司添加请求")
 public class CompanyAddRequest implements Serializable {
 
+    @NotEmpty(message = "公司名称不能为空")
     @ApiModelProperty(value = "公司名称")
     private String companyName;
 
