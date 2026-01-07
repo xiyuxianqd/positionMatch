@@ -18,7 +18,27 @@ public class StpInterfaceImpl implements StpInterface {
 
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        return new ArrayList<>();
+        User user = userService.getById((Long) loginId);
+        if (user == null) {
+            return new ArrayList<>();
+        }
+        List<String> list = new ArrayList<>();
+        String role = user.getUserRole();
+        if (UserRoleEnum.ADMIN.getValue().equals(role)) {
+            list.add("101");
+            list.add("user.add");
+            list.add("user.update");
+            list.add("user.delete");
+            list.add("user.get");
+            list.add("art.*");
+        } else if (UserRoleEnum.HR.getValue().equals(role)) {
+            list.add("user.get");
+            list.add("art.*");
+        } else if (UserRoleEnum.STUDENT.getValue().equals(role)) {
+            list.add("user.get");
+            list.add("art.*");
+        }
+        return list;
     }
 
     @Override
