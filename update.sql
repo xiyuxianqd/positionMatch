@@ -1,6 +1,7 @@
 -- 用户表
-CREATE TABLE IF NOT EXISTS `user` (
-    `id` BIGINT NOT NULL COMMENT '用户ID',
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '用户ID',
     `user_account` VARCHAR(50) NOT NULL COMMENT '用户账号',
     `user_password` VARCHAR(100) NOT NULL COMMENT '用户密码',
     `user_name` VARCHAR(50) DEFAULT NULL COMMENT '用户昵称',
@@ -18,19 +19,25 @@ CREATE TABLE IF NOT EXISTS `user` (
     `email` VARCHAR(100) DEFAULT NULL COMMENT '邮箱',
     `resume_url` VARCHAR(500) DEFAULT NULL COMMENT '简历链接',
     `user_status` INT DEFAULT 0 COMMENT '用户状态：0-正常，1-禁用',
-    `edit_time` DATETIME DEFAULT NULL COMMENT '编辑时间',
+    `version` INT DEFAULT 0 COMMENT '乐观锁版本号',
+    `add_user_id` BIGINT DEFAULT NULL COMMENT '添加人ID',
+    `add_user_name` VARCHAR(50) DEFAULT NULL COMMENT '添加人姓名',
+    `edit_user_id` BIGINT DEFAULT NULL COMMENT '编辑人ID',
+    `edit_user_name` VARCHAR(50) DEFAULT NULL COMMENT '编辑人姓名',
     `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `is_delete` INT DEFAULT 0 COMMENT '是否删除：0-未删除，1-已删除',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_user_account` (`user_account`),
     KEY `idx_user_role` (`user_role`),
-    KEY `idx_user_status` (`user_status`)
+    KEY `idx_user_status` (`user_status`),
+    KEY `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
 -- 公司表
-CREATE TABLE IF NOT EXISTS `company` (
-    `id` BIGINT NOT NULL COMMENT '公司ID',
+DROP TABLE IF EXISTS `company`;
+CREATE TABLE `company` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '公司ID',
     `company_name` VARCHAR(100) NOT NULL COMMENT '公司名称',
     `company_desc` TEXT DEFAULT NULL COMMENT '公司简介',
     `industry` VARCHAR(50) DEFAULT NULL COMMENT '所属行业',
@@ -42,18 +49,25 @@ CREATE TABLE IF NOT EXISTS `company` (
     `contact_phone` VARCHAR(20) DEFAULT NULL COMMENT '联系电话',
     `contact_email` VARCHAR(100) DEFAULT NULL COMMENT '联系邮箱',
     `company_status` INT DEFAULT 0 COMMENT '公司状态：0-正常，1-已禁用',
+    `version` INT DEFAULT 0 COMMENT '乐观锁版本号',
+    `add_user_id` BIGINT DEFAULT NULL COMMENT '添加人ID',
+    `add_user_name` VARCHAR(50) DEFAULT NULL COMMENT '添加人姓名',
+    `edit_user_id` BIGINT DEFAULT NULL COMMENT '编辑人ID',
+    `edit_user_name` VARCHAR(50) DEFAULT NULL COMMENT '编辑人姓名',
     `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `is_delete` INT DEFAULT 0 COMMENT '是否删除：0-未删除，1-已删除',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_company_name` (`company_name`),
     KEY `idx_industry` (`industry`),
-    KEY `idx_company_status` (`company_status`)
+    KEY `idx_company_status` (`company_status`),
+    KEY `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公司表';
 
 -- 职位表
-CREATE TABLE IF NOT EXISTS `position` (
-    `id` BIGINT NOT NULL COMMENT '职位ID',
+DROP TABLE IF EXISTS `position`;
+CREATE TABLE `position` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '职位ID',
     `position_name` VARCHAR(100) NOT NULL COMMENT '职位名称',
     `company_name` VARCHAR(100) NOT NULL COMMENT '公司名称',
     `company_id` BIGINT DEFAULT NULL COMMENT '公司ID',
@@ -70,6 +84,11 @@ CREATE TABLE IF NOT EXISTS `position` (
     `position_status` INT DEFAULT 0 COMMENT '职位状态：0-正常，1-已关闭，2-已招满',
     `view_count` INT DEFAULT 0 COMMENT '浏览次数',
     `apply_count` BIGINT DEFAULT 0 COMMENT '申请次数',
+    `version` INT DEFAULT 0 COMMENT '乐观锁版本号',
+    `add_user_id` BIGINT DEFAULT NULL COMMENT '添加人ID',
+    `add_user_name` VARCHAR(50) DEFAULT NULL COMMENT '添加人姓名',
+    `edit_user_id` BIGINT DEFAULT NULL COMMENT '编辑人ID',
+    `edit_user_name` VARCHAR(50) DEFAULT NULL COMMENT '编辑人姓名',
     `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     `is_delete` INT DEFAULT 0 COMMENT '是否删除：0-未删除，1-已删除',
@@ -79,3 +98,11 @@ CREATE TABLE IF NOT EXISTS `position` (
     KEY `idx_position_status` (`position_status`),
     KEY `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='职位表';
+
+-- 插入测试数据
+INSERT INTO `user` (`user_account`, `user_password`, `user_name`, `user_role`) VALUES
+('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', 'admin'),
+('hr001', 'e10adc3949ba59abbe56e057f20f883e', 'HR张三', 'hr'),
+('student001', 'e10adc3949ba59abbe56e057f20f883e', '学生李四', 'student');
+
+-- 密码都是：12345678（MD5加密后）
