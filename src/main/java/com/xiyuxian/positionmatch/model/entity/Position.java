@@ -11,9 +11,6 @@ import java.util.Date;
 @TableName(value = "position")
 public class Position extends BaseEntity {
 
-    @Version
-    private Integer version;
-
     private String positionName;
 
     private String companyName;

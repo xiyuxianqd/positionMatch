@@ -11,9 +11,6 @@ import java.util.Date;
 @TableName(value = "user")
 public class User extends BaseEntity {
 
-    @Version
-    private Integer version;
-
     private String userAccount;
 
     private String userPassword;

@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiyuxian.positionmatch.constant.UserConstant;
@@ -47,9 +48,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "两次输入的密码不一致");
         }
         
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userAccount", userAccount);
-        long count = this.baseMapper.selectCount(queryWrapper);
+        if (StrUtil.isBlank(userRole)) {
+            userRole = UserRoleEnum.STUDENT.getValue();
+        }
+        
+        if (UserRoleEnum.ADMIN.getValue().equals(userRole)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "不允许注册为管理员角色");
+        }
+        
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUserAccount, userAccount);
+        long count = this.baseMapper.selectCount(lambdaQueryWrapper);
         if (count > 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
         }
@@ -85,10 +94,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         
         String encryptPassword = getEncryptPassword(userPassword);
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userAccount", userAccount);
-        queryWrapper.eq("userPassword", encryptPassword);
-        User user = this.baseMapper.selectOne(queryWrapper);
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUserAccount, userAccount);
+        lambdaQueryWrapper.eq(User::getUserPassword, encryptPassword);
+        User user = this.baseMapper.selectOne(lambdaQueryWrapper);
         
         if (user == null) {
             log.info("user login failed, userAccount cannot match userPassword");
@@ -97,7 +106,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         
         request.getSession().setAttribute(UserConstant.USER_LOGIN_STATE, user);
         StpKit.login(user.getId());
-//        StpKit.getLoginType().getSession().set(UserConstant.USER_LOGIN_STATE, user);
         
         return this.getLoginUserVO(user);
     }
@@ -185,16 +193,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(ObjUtil.isNotNull(id), "id", id);
-        queryWrapper.eq(StrUtil.isNotBlank(userRole), "userRole", userRole);
-        queryWrapper.like(StrUtil.isNotBlank(userAccount), "userAccount", userAccount);
-        queryWrapper.like(StrUtil.isNotBlank(userName), "userName", userName);
-        queryWrapper.like(StrUtil.isNotBlank(userProfile), "userProfile", userProfile);
+        queryWrapper.eq(StrUtil.isNotBlank(userRole), "user_role", userRole);
+        queryWrapper.like(StrUtil.isNotBlank(userAccount), "user_account", userAccount);
+        queryWrapper.like(StrUtil.isNotBlank(userName), "user_name", userName);
+        queryWrapper.like(StrUtil.isNotBlank(userProfile), "user_profile", userProfile);
         queryWrapper.like(StrUtil.isNotBlank(education), "education", education);
         queryWrapper.like(StrUtil.isNotBlank(major), "major", major);
-        queryWrapper.eq(ObjUtil.isNotNull(graduationYear), "graduationYear", graduationYear);
+        queryWrapper.eq(ObjUtil.isNotNull(graduationYear), "graduation_year", graduationYear);
         queryWrapper.like(StrUtil.isNotBlank(school), "school", school);
-        queryWrapper.like(StrUtil.isNotBlank(companyName), "companyName", companyName);
-        queryWrapper.eq(ObjUtil.isNotNull(userStatus), "userStatus", userStatus);
+        queryWrapper.like(StrUtil.isNotBlank(companyName), "company_name", companyName);
+        queryWrapper.eq(ObjUtil.isNotNull(userStatus), "user_status", userStatus);
         queryWrapper.orderBy(StrUtil.isNotEmpty(sortField), sortOrder.equals("ascend"), sortField);
         return queryWrapper;
     }

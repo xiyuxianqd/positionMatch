@@ -9,4 +9,8 @@ public interface UserConstant {
     String VIP_ROLE = "vip";
 
     String ADMIN_ROLE = "admin";
+
+    String HR_ROLE = "hr";
+
+    String STUDENT_ROLE = "student";
 }

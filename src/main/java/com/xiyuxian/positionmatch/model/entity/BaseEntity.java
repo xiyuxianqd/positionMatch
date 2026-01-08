@@ -1,11 +1,6 @@
 package com.xiyuxian.positionmatch.model.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,7 +38,4 @@ public class BaseEntity implements Serializable {
 
     @TableField(value = "edit_user_name", fill = FieldFill.INSERT_UPDATE)
     private String editUserName;
-
-    @TableField(value = "company_id")
-    private Long companyId;
 }
