@@ -99,6 +99,75 @@ CREATE TABLE `position` (
     KEY `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='职位表';
 
+-- 用户行为表
+DROP TABLE IF EXISTS `user_behavior`;
+CREATE TABLE `user_behavior` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '行为ID',
+    `user_id` BIGINT NOT NULL COMMENT '用户ID',
+    `position_id` BIGINT NOT NULL COMMENT '职位ID',
+    `behavior_type` VARCHAR(20) NOT NULL COMMENT '行为类型：view-浏览，apply-申请，collect-收藏，feedback-反馈',
+    `rating` FLOAT DEFAULT 0.0 COMMENT '评分：0-1之间，用于协同过滤',
+    `version` INT DEFAULT 0 COMMENT '乐观锁版本号',
+    `add_user_id` BIGINT DEFAULT NULL COMMENT '添加人ID',
+    `add_user_name` VARCHAR(50) DEFAULT NULL COMMENT '添加人姓名',
+    `edit_user_id` BIGINT DEFAULT NULL COMMENT '编辑人ID',
+    `edit_user_name` VARCHAR(50) DEFAULT NULL COMMENT '编辑人姓名',
+    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `is_delete` INT DEFAULT 0 COMMENT '是否删除：0-未删除，1-已删除',
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_position_id` (`position_id`),
+    KEY `idx_user_position` (`user_id`, `position_id`),
+    KEY `idx_behavior_type` (`behavior_type`),
+    KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户行为表';
+
+-- 用户收藏表
+DROP TABLE IF EXISTS `user_collection`;
+CREATE TABLE `user_collection` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '收藏ID',
+    `user_id` BIGINT NOT NULL COMMENT '用户ID',
+    `position_id` BIGINT NOT NULL COMMENT '职位ID',
+    `version` INT DEFAULT 0 COMMENT '乐观锁版本号',
+    `add_user_id` BIGINT DEFAULT NULL COMMENT '添加人ID',
+    `add_user_name` VARCHAR(50) DEFAULT NULL COMMENT '添加人姓名',
+    `edit_user_id` BIGINT DEFAULT NULL COMMENT '编辑人ID',
+    `edit_user_name` VARCHAR(50) DEFAULT NULL COMMENT '编辑人姓名',
+    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `is_delete` INT DEFAULT 0 COMMENT '是否删除：0-未删除，1-已删除',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_position` (`user_id`, `position_id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_position_id` (`position_id`),
+    KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户收藏表';
+
+-- 用户申请表
+DROP TABLE IF EXISTS `user_apply`;
+CREATE TABLE `user_apply` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '申请ID',
+    `user_id` BIGINT NOT NULL COMMENT '用户ID',
+    `position_id` BIGINT NOT NULL COMMENT '职位ID',
+    `apply_status` VARCHAR(20) DEFAULT 'pending' COMMENT '申请状态：pending-待处理，approved-已通过，rejected-已拒绝',
+    `resume_url` VARCHAR(500) DEFAULT NULL COMMENT '简历链接',
+    `cover_letter` TEXT DEFAULT NULL COMMENT '求职信',
+    `version` INT DEFAULT 0 COMMENT '乐观锁版本号',
+    `add_user_id` BIGINT DEFAULT NULL COMMENT '添加人ID',
+    `add_user_name` VARCHAR(50) DEFAULT NULL COMMENT '添加人姓名',
+    `edit_user_id` BIGINT DEFAULT NULL COMMENT '编辑人ID',
+    `edit_user_name` VARCHAR(50) DEFAULT NULL COMMENT '编辑人姓名',
+    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `is_delete` INT DEFAULT 0 COMMENT '是否删除：0-未删除，1-已删除',
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_position_id` (`position_id`),
+    KEY `idx_apply_status` (`apply_status`),
+    KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户申请表';
+
 -- 插入测试数据
 INSERT INTO `user` (`user_account`, `user_password`, `user_name`, `user_role`) VALUES
 ('admin', 'e10adc3949ba59abbe56e057f20f883e', '管理员', 'admin'),
