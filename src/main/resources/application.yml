@@ -15,6 +15,13 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  task:
+    execution:
+      pool:
+        core-size: 10
+        max-size: 20
+        queue-capacity: 200
+        thread-name-prefix: async-task-
 
 mybatis-plus:
   configuration:
@@ -27,7 +34,7 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 sa-token:
-  token-name: Authorization
+  token-name: satoken
   timeout: 2592000
   active-timeout: -1
   is-concurrent: true
@@ -35,3 +42,16 @@ sa-token:
   token-style: uuid
   is-log: false
   jwt-secret-key: abcdefghijklmnopqrstuvwxyz
+
+recommendation:
+  python:
+    api:
+      url: http://localhost:8000
+  cache:
+    expire:
+      hours: 1
+  model:
+    training:
+      lock:
+        timeout:
+          minutes: 30
