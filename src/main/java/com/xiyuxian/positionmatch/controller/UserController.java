@@ -1,5 +1,6 @@
 package com.xiyuxian.positionmatch.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiyuxian.positionmatch.annotation.AuthCheck;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -45,10 +47,18 @@ public class UserController {
 
     @PostMapping("/login")
     @ApiOperation(value = "用户登录")
-    public BaseResponse<LoginUserVO> userLogin(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+    public BaseResponse<LoginUserVO> userLogin(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request, HttpServletResponse response) {
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
+        
         LoginUserVO loginUserVO = userService.userLogin(userAccount, userPassword, request);
+        
+        String token = StpUtil.getTokenValue();
+        System.out.println("User logged in: " + loginUserVO.getId());
+        System.out.println("Sa-Token set: " + token);
+        
+        response.setHeader("satoken", token);
+        
         return ResultUtils.success(loginUserVO);
     }
 

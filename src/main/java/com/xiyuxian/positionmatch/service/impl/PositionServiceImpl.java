@@ -142,23 +142,24 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Position> i
 
         QueryWrapper<Position> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(ObjUtil.isNotNull(positionQueryRequest.getId()), "id", positionQueryRequest.getId());
-        queryWrapper.like(StrUtil.isNotBlank(positionQueryRequest.getPositionName()), "positionName", positionQueryRequest.getPositionName());
-        queryWrapper.like(StrUtil.isNotBlank(positionQueryRequest.getCompanyName()), "companyName", positionQueryRequest.getCompanyName());
-        queryWrapper.eq(ObjUtil.isNotNull(positionQueryRequest.getCompanyId()), "companyId", positionQueryRequest.getCompanyId());
+        queryWrapper.like(StrUtil.isNotBlank(positionQueryRequest.getPositionName()), "position_name", positionQueryRequest.getPositionName());
+        queryWrapper.like(StrUtil.isNotBlank(positionQueryRequest.getCompanyName()), "company_name", positionQueryRequest.getCompanyName());
+        queryWrapper.eq(ObjUtil.isNotNull(positionQueryRequest.getCompanyId()), "company_id", positionQueryRequest.getCompanyId());
         queryWrapper.like(StrUtil.isNotBlank(positionQueryRequest.getEducation()), "education", positionQueryRequest.getEducation());
         queryWrapper.like(StrUtil.isNotBlank(positionQueryRequest.getMajor()), "major", positionQueryRequest.getMajor());
         queryWrapper.like(StrUtil.isNotBlank(positionQueryRequest.getSkills()), "skills", positionQueryRequest.getSkills());
-        queryWrapper.eq(StrUtil.isNotBlank(positionQueryRequest.getPositionType()), "positionType", positionQueryRequest.getPositionType());
+        queryWrapper.eq(StrUtil.isNotBlank(positionQueryRequest.getPositionType()), "position_type", positionQueryRequest.getPositionType());
         queryWrapper.like(StrUtil.isNotBlank(positionQueryRequest.getTags()), "tags", positionQueryRequest.getTags());
-        queryWrapper.eq(ObjUtil.isNotNull(positionQueryRequest.getPositionStatus()), "positionStatus", positionQueryRequest.getPositionStatus());
+        queryWrapper.eq(ObjUtil.isNotNull(positionQueryRequest.getPositionStatus()), "position_status", positionQueryRequest.getPositionStatus());
 
         String sortField = positionQueryRequest.getSortField();
         String sortOrder = positionQueryRequest.getSortOrder();
         if (StrUtil.isNotEmpty(sortField)) {
             boolean isAscend = "ascend".equals(sortOrder);
-            queryWrapper.orderBy(true, isAscend, sortField);
+            String dbSortField = StrUtil.toUnderlineCase(sortField);
+            queryWrapper.orderBy(true, isAscend, dbSortField);
         } else {
-            queryWrapper.orderByDesc("createTime");
+            queryWrapper.orderByDesc("create_time");
         }
 
         return queryWrapper;

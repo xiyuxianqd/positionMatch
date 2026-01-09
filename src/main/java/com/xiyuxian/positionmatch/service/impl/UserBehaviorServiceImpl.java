@@ -116,9 +116,13 @@ public class UserBehaviorServiceImpl extends ServiceImpl<UserBehaviorMapper, Use
         queryWrapper.eq(positionId != null, "position_id", positionId);
         queryWrapper.eq(StrUtil.isNotBlank(behaviorType), "behavior_type", behaviorType);
 
-        queryWrapper.orderBy(StrUtil.isNotBlank(sortField), "asc".equals(sortOrder), sortField);
-        queryWrapper.orderByDesc("create_time");
-
+        if (StrUtil.isNotBlank(sortField)) {
+            String dbSortField = StrUtil.toUnderlineCase(sortField);
+            queryWrapper.orderBy(StrUtil.isNotBlank(dbSortField), "asc".equals(sortOrder), dbSortField);
+        } else {
+            queryWrapper.orderByDesc("create_time");
+        }
+        
         return queryWrapper;
     }
 }

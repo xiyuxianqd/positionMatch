@@ -137,18 +137,19 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
 
         QueryWrapper<Company> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(ObjUtil.isNotNull(companyQueryRequest.getId()), "id", companyQueryRequest.getId());
-        queryWrapper.like(StrUtil.isNotBlank(companyQueryRequest.getCompanyName()), "companyName", companyQueryRequest.getCompanyName());
+        queryWrapper.like(StrUtil.isNotBlank(companyQueryRequest.getCompanyName()), "company_name", companyQueryRequest.getCompanyName());
         queryWrapper.like(StrUtil.isNotBlank(companyQueryRequest.getIndustry()), "industry", companyQueryRequest.getIndustry());
-        queryWrapper.like(StrUtil.isNotBlank(companyQueryRequest.getCompanySize()), "companySize", companyQueryRequest.getCompanySize());
-        queryWrapper.eq(ObjUtil.isNotNull(companyQueryRequest.getCompanyStatus()), "companyStatus", companyQueryRequest.getCompanyStatus());
+        queryWrapper.like(StrUtil.isNotBlank(companyQueryRequest.getCompanySize()), "company_size", companyQueryRequest.getCompanySize());
+        queryWrapper.eq(ObjUtil.isNotNull(companyQueryRequest.getCompanyStatus()), "company_status", companyQueryRequest.getCompanyStatus());
 
         String sortField = companyQueryRequest.getSortField();
         String sortOrder = companyQueryRequest.getSortOrder();
         if (StrUtil.isNotEmpty(sortField)) {
             boolean isAscend = "ascend".equals(sortOrder);
-            queryWrapper.orderBy(true, isAscend, sortField);
+            String dbSortField = StrUtil.toUnderlineCase(sortField);
+            queryWrapper.orderBy(true, isAscend, dbSortField);
         } else {
-            queryWrapper.orderByDesc("createTime");
+            queryWrapper.orderByDesc("create_time");
         }
 
         return queryWrapper;
@@ -157,8 +158,8 @@ public class CompanyServiceImpl extends ServiceImpl<CompanyMapper, Company> impl
     @Override
     public List<CompanyVO> getAllCompanies() {
         QueryWrapper<Company> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("companyStatus", 0);
-        queryWrapper.orderByDesc("createTime");
+        queryWrapper.eq("company_status", 0);
+        queryWrapper.orderByDesc("create_time");
         List<Company> companyList = this.list(queryWrapper);
         return getCompanyVOList(companyList);
     }
